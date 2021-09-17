@@ -22,7 +22,7 @@ class LoginTest(FunctionalTest):
         try:
             inbox.user(test_email)
             inbox.pass_(os.environ['EMAIL_PASSWORD'])
-            while time.time() - start < 60:
+            while time.time() - start < 120:
                 # get 10 newest messages
                 count, _ = inbox.stat()
                 for i in reversed(range(max(1, count-10), count+1)):
