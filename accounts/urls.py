@@ -15,7 +15,6 @@ Including another URLconf
 """
 from accounts import views
 from django.conf.urls import url
-from django.contrib.auth import logout
 
 urlpatterns = [
     url(r'^send_login_email$', views.send_login_email, name = 'send_login_email'),
