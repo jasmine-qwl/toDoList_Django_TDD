@@ -5,7 +5,7 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium.common.exceptions import WebDriverException
 from .server_tools import reset_database
 
-MAX_WAIT = 10
+MAX_WAIT = 30
 
 def wait(fn):
     def modified_fn(*args, **kwargs):
