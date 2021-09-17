@@ -2,11 +2,23 @@ from django.core import mail
 from selenium.webdriver.common.keys import Keys
 import re, os, poplib, time
 from .base import FunctionalTest
+from contextlib import contextmanager
 
 SUBJECT = 'Your login link for Superlists'
 
 
 class LoginTest(FunctionalTest):
+
+    @contextmanager
+    def pop_inbox(self, test_email):
+        try:
+            inbox = poplib.POP3_SSL('pop.gmail.com')
+            inbox.user(test_email)
+            inbox.pass_(os.environ['EMAIL_PASSWORD'])
+            yield inbox
+
+        finally:
+            inbox.quit()
 
     def wait_for_email(self, test_email, subject):
 
@@ -16,28 +28,24 @@ class LoginTest(FunctionalTest):
             self.assertEqual(email.subject, subject)
             return email.body
 
-        email_id = None
+        last_count = 0
         start = time.time()
-        inbox = poplib.POP3_SSL('pop.gmail.com')
-        try:
-            inbox.user(test_email)
-            inbox.pass_(os.environ['EMAIL_PASSWORD'])
-            while time.time() - start < 120:
-                # get 10 newest messages
+
+        while time.time() - start < 60:
+            with self.pop_inbox(test_email) as inbox:
+            # get 10 newest messages
                 count, _ = inbox.stat()
-                for i in reversed(range(max(1, count-10), count+1)):
-                    print('getting msg', i)
-                    _, lines, __ = inbox.retr(i)
-                    lines = [l.decode('utf8') for l in lines]
-                    if f'Subject: {subject}' in lines:
-                        email_id = i
-                        body = '\n'.join(lines)
-                        return body
-                time.sleep(5)
-        finally:
-            if email_id:
-                inbox.dele(email_id)
-            inbox.quit()
+                if count != last_count:
+                    for i in reversed(range(max(1, count-10), count+1)):
+                        print('getting msg', i)
+                        _, lines, __ = inbox.retr(i)
+                        lines = [l.decode('utf8') for l in lines]
+                        if f'Subject: {subject}' in lines:
+                            inbox.dele(i)
+                            body = '\n'.join(lines)
+                            return body
+                last_count = count
+            time.sleep(5)
 
     def test_can_get_email_link_to_log_in(self):
         # Edith goes to the awesome superlists site
