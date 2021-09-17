@@ -1,4 +1,4 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from lists.models import List
 from lists.forms import ItemForm, ExistingListItemForm
 from django.views.generic import FormView, CreateView, DetailView
@@ -24,3 +24,7 @@ class NewListView(CreateView):
         list_ = List.objects.create()
         form.save(for_list=list_)
         return redirect(list_)
+
+def my_lists(request, email):
+    return render(request, 'my_lists.html')
+
