@@ -2,6 +2,9 @@ from django.shortcuts import redirect, render
 from lists.models import List
 from lists.forms import ItemForm, ExistingListItemForm
 from django.views.generic import FormView, CreateView, DetailView
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class HomePageView(FormView):
     template_name = 'home.html'
@@ -26,5 +29,5 @@ class NewListView(CreateView):
         return redirect(list_)
 
 def my_lists(request, email):
-    return render(request, 'my_lists.html')
-
+    owner = User.objects.get(email=email)
+    return render(request, 'my_lists.html', {'owner': owner})
