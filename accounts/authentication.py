@@ -3,9 +3,7 @@ from accounts.models import User, Token
 class PasswordlessAuthenticationBackend(object):
 
     def authenticate(self, request):
-        print('start authentication')
         uid=request.GET.get('token')
-        print(uid)
         try:
             token = Token.objects.get(uid=uid)
             print(1)
