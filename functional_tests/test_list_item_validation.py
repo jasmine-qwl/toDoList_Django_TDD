@@ -40,7 +40,7 @@ class ItemValidationTest(FunctionalTest):
         self.wait_for(lambda: self.browser.find_element_by_css_selector(
             '#id_text:valid'
         ))
-        self.get_item_input_box().send_keys(Keys.ENTER)
+        ListPage(self).get_item_input_box().send_keys(Keys.ENTER)
         ListPage(self).wait_for_row_in_list_table('Buy milk', 1)
         ListPage(self).wait_for_row_in_list_table('Make tea', 2)
 
