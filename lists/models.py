@@ -6,7 +6,9 @@ from django.conf import settings
 class List(models.Model):
 
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete = models.CASCADE,
-                              blank=True, null=True)
+                              blank=True, null=True, related_name='lists_as_owner')
+    shared_with = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='lists_as_shared')
+
     def get_absolute_url(self):
         return reverse('view_list', args = [self.id])
 
@@ -19,6 +21,9 @@ class List(models.Model):
     @property
     def name(self):
         return self.item_set.first().text
+
+
+
 class Item(models.Model):
     text = models.TextField(default = "")
     list = models.ForeignKey(List, on_delete = models.CASCADE, default = None)

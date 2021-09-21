@@ -120,6 +120,13 @@ class ListViewTest(TestCase):
         self.assertTemplateUsed(response, 'list.html')
         self.assertEqual(Item.objects.all().count(), 1)
 
+    def test_display_shared_with_list(self):
+        list_ = List.objects.create()
+        user = User.objects.create(email = 'a@b.com')
+        list_.shared_with.add(user)
+        response = self.client.get(f'/lists/{list_.id}/')
+        self.assertContains(response, user.email)
+
 class NewListViewIntegratedTest(TestCase):
 
     def test_can_save_a_POST_request(self):
@@ -211,3 +218,23 @@ class MyListsTest(TestCase):
         correct_user = User.objects.create(email = 'a@b.com')
         response = self.client.get('/lists/users/a@b.com/')
         self.assertEqual(response.context['owner'], correct_user)
+
+class ShareListTest(TestCase):
+
+    def test_post_redirects_to_lists_page(self):
+        list_ = List.objects.create()
+        response = self.client.post(
+            f'/lists/{list_.id}/share',
+            data = {'sharee':'ab@123.com'}
+        )
+        self.assertRedirects(response, f'/lists/{list_.id}/')
+
+    def test_add_sharee_to_list_shared_with(self):
+        user = User.objects.create(email='a@b.com')
+        self.client.post('/lists/new', data={'text': 'new item'})
+        list_ = List.objects.first()
+        self.client.post(
+            f'/lists/{list_.id}/share',
+            data = {'sharee':'a@b.com'}
+        )
+        self.assertIn(user, list_.shared_with.all())
