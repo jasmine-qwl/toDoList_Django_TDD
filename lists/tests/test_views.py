@@ -238,3 +238,26 @@ class ShareListTest(TestCase):
             data = {'sharee':'a@b.com'}
         )
         self.assertIn(user, list_.shared_with.all())
+
+class DeleteListTest(TestCase):
+
+    def test_post_redirects_to_my_lists_page(self):
+        user = User.objects.create(email='a@b.com')
+        self.client.force_login(user)
+        self.client.post('/lists/new', data={'text': 'new item'})
+        list_ = List.objects.first()
+        response = self.client.post(
+            f'/lists/{list_.id}/delete',
+        )
+        self.assertRedirects(response, '/lists/users/a@b.com/')
+
+    def test_lists_items_are_deleted(self):
+        user = User.objects.create(email='a@b.com')
+        self.client.force_login(user)
+        self.client.post('/lists/new', data={'text': 'new item'})
+        list_id = List.objects.first().id
+        self.client.post(
+            f'/lists/{list_id}/delete',
+        )
+        self.assertEqual(0, len(List.objects.filter(id=list_id)))
+        self.assertEqual(0, len(Item.objects.filter(list=list_id)))

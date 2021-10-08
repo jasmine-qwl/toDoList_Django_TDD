@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^(\d+)/$', views.view_list, name = 'view_list'),
     url(r"^users/(.+)/$", views.my_lists, name = "my_lists"),
     url(r'^(\d+)/share$', views.share_list, name = 'share_list'),
+    url(r'^(\d+)/delete$', views.delete_list, name = 'delete_list')
 ]

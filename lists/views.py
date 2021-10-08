@@ -38,3 +38,9 @@ def share_list(request, list_id):
         user_sharee = User.objects.create(email=sharee)
     list_.shared_with.add(user_sharee)
     return redirect(list_)
+
+def delete_list(request, list_id):
+    list_ = List.objects.get(id=list_id)
+    list_.delete()
+    owner = list_.owner.email
+    return redirect(f'/lists/users/{owner}/')

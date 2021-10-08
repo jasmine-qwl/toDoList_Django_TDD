@@ -6,17 +6,24 @@
 
 {% block extra_content %}
     <h2>{{ owner.email }}'s lists</h2>
-    <table>
+    <table class = "table">
         {% for list in owner.lists_as_owner.all %}
             <tr id="{{list.name}}">
                 <td><a href="{{ list.get_absolute_url }}">{{ list.name }}</a></td>
-                <td><button>"Delete"</button></td>
+                <form method="POST" action="{% url 'delete_list' list.id %}">
+                    <td><button>Delete</button></td>
+                    {% csrf_token %}
+                </form>
+
             </tr>
         {% endfor %}
         {% for list in owner.lists_as_shared.all %}
             <tr>
                 <td><a href="{{ list.get_absolute_url }}">{{ list.name }}</a></td>
-                <td><button>"Delete"</button></td>
+                <form action="POST" action="{% url 'delete_list' list.id %}">
+                    <td><button>Delete</button></td>
+                    {% csrf_token %}
+                </form>
             </tr>
         {% endfor %}
     </table>
