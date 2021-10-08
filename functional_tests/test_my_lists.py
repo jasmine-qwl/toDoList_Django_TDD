@@ -41,18 +41,22 @@ class MyListsTest(FunctionalTest):
         self.wait_for(
             lambda: self.browser.find_element_by_link_text('Click cows')
         )
-        selected_list = self.browser.find_element_by_link_text('Click cows')
-        selected_list.click()
+        self.browser.find_element_by_link_text('Click cows').click()
         self.wait_for(
             lambda: self.assertEqual(self.browser.current_url, second_list_url)
         )
 
-        # There is a "delete" button on the right side of each list
+        # She go back to "my lists" page, There is a "delete" button on the right side of each list
+        MyListsPage(self).go_to_my_lists_page()
         my_lists_url = self.browser.current_url
-        selected_list_item = selected_list.parent
+        self.wait_for(
+            lambda: self.browser.find_element_by_id('Click cows')
+        )
+        # selected_list = self.browser.find_element_by_link_text('Click cows')
+        selected_list_item = self.browser.find_element_by_id('Click cows')
 
         # After she clicked it, page refresh and the list disappeared
-        selected_list_item.find_element_by_text('delete').click()
+        selected_list_item.find_element_by_tag_name("button").click()
         self.wait_for(
             lambda: self.assertEqual(self.browser.current_url, my_lists_url)
         )

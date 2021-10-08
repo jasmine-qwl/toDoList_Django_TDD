@@ -4,7 +4,6 @@ import time
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium.common.exceptions import WebDriverException
 from .server_tools import reset_database
-from selenium.webdriver.common.keys import Keys
 from datetime import datetime
 from .server_tools import create_session_on_server
 from .management.commands.create_session import create_pre_authenticated_session
@@ -32,12 +31,6 @@ class FunctionalTest(StaticLiveServerTestCase):
     @wait
     def wait_for(self, fn):
         return fn()
-
-    # @wait
-    # def wait_for_row_in_list_table(self, row_text):
-    #     table = self.browser.find_element_by_id('id_list_table')
-    #     rows = table.find_elements_by_tag_name('tr')
-    #     self.assertIn(row_text, [row.text for row in rows])
 
     def setUp(self):
         self.browser = webdriver.Firefox()
