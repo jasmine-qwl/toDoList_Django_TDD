@@ -3,8 +3,7 @@ from django.test import TestCase
 from django.utils.html import escape
 from lists.forms import (
     ItemForm, EMPTY_ITEM_ERROR,
-    DUPLICATE_ITEM_ERROR, ExistingListItemForm,
-    NewListForm
+    DUPLICATE_ITEM_ERROR, ExistingListItemForm
 )
 from django.contrib.auth import get_user_model
 from unittest.mock import patch, Mock
