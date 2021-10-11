@@ -1,8 +1,6 @@
 geckodriver.log
 env
 db.sqlite3
-__pycache__
-*.pyc
 .idea
 /static
 .env
